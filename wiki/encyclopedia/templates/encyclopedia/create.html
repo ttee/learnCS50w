@@ -1,0 +1,45 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    {% if create %}
+        {{ Title }}
+    {% else %}
+        Create New Page
+    {% endif %}
+{% endblock %}
+
+{% block body %}
+    {% if create %}
+        {{ Content }}
+    {% else %}
+        <div id="form_container">
+
+
+        <form id="form_121188" class="appnitro"  method="post" action="">
+            {% csrf_token %}
+                    <div class="form_description">
+            <p>This is your form to create new entry in the Wikipedia. Type here to create the new entry.</p>
+        </div>						
+            <ul >
+                    <li id="li_1" >
+        <label class="description" for="Title">Title of new entry </label>
+        <div>
+            <input id="Title" name="Title" class="element text medium" type="text" maxlength="255" value=""/> 
+        </div> 
+        </li>		<li id="li_2" >
+        <label class="description" for="Content">Paragraph </label>
+        <div>
+            <textarea id="Content" name="Content" class="element textarea medium"></textarea> 
+        </div> 
+        </li>
+                <li class="buttons">
+                <input type="hidden" name="form_id" value="121188" />
+                <input id="saveForm" class="button_text" type="submit" name="submit" value="Submit" />
+        </li>
+            </ul>
+        </form>	
+
+        </div>
+ 
+    {% endif %}
+{% endblock %}
