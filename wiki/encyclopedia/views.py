@@ -72,31 +72,33 @@ def create(request):
 
 
 def edit(request, title):
-    entries = util.list_entries()
-    if title in entries:
+
+    if title not in util.list_entries():
+        context = {"message": "Error: You are trying to edit a non existent Wiki entry.",}
+        return render(request, "encyclopedia/error.html", context)
+
+    if request.method == "POST":
+        Content = request.POST.get("Content","")
+        context = {
+            "Title": title,
+            "Content": Content,
+            "edit": True,
+        }
+        util.save_entry(title, Content)
+        page = util.get_entry(title)
+        page_converted = markdowner.convert(page)
+        context = {
+            'page': page_converted,
+            'title': title,
+             }
+        return render(request, "encyclopedia/entry.html", context)
+    elif request.method == "GET":
         page = util.get_entry(title)
         page_converted = markdowner.convert(page)
         context = {
             'Title': title,
             'Content': page,
-            'create': False,
-             }
-        return render(request, "encyclopedia/create.html", context)
-    else:
-        return render(request, "encyclopedia/error.html", {"message": "The requested page was not found.", "form":Search()})
+            'edit': False,
+        }
+        return render(request, "encyclopedia/edit.html", context)
 
-
-
-    # entries = util.list_entries()
-    # if title in entries:
-    #     page = util.get_entry(title)
-    #     page_converted = markdowner.convert(page)
-    #     context = {
-    #         'Content': page_converted,
-    #         'Title': title,
-    #          }
-    #     return render(request, "encyclopedia/create.html", context)
-    # else:
-    #     return render(request, "encyclopedia/error.html", {"message": "The requested page was not found.", "form":Search()})
-
-        

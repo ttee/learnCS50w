@@ -1,0 +1,46 @@
+{% extends "encyclopedia/layout.html" %}
+
+
+{% block title %}
+    {% if edit %}
+        {{ Title }}
+    {% else %}
+        Create New Page
+    {% endif %}
+{% endblock %}
+
+{% block body %}
+    {% if edit %}
+        {{ Content }}
+    {% else %}
+        <div id="form_container">
+
+
+        <form id="form_121188" class="appnitro"  method="post" action="">
+            {% csrf_token %}
+                    <div class="form_description">
+            <p>This is your form to edit existing entry in the Wikipedia. Type here to edit the existing entry.</p>
+        </div>						
+            <ul >
+                    <li id="li_1" >
+        <label class="description" for="Title">Title of existing entry </label>
+        <div>
+            <h1>{{Title}}</h1>
+        </div> 
+        </li>		<li id="li_2" >
+        <label class="description" for="Content">Paragraph </label>
+        <div>
+            <textarea id="Content" name="Content" class="element textarea medium">{{Content}}</textarea> 
+        </div> 
+        </li>
+                <li class="buttons">
+                <input type="hidden" name="form_id" value="121188" />
+                <input id="saveForm" class="button_text" type="submit" name="submit" value="Submit Edited Content" />
+        </li>
+            </ul>
+        </form>	
+
+        </div>
+ 
+    {% endif %}
+{% endblock %}
