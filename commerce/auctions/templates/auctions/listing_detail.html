@@ -1,0 +1,86 @@
+{% extends "auctions/layout.html" %}
+<!-- objects are passed to the html template
+and in the html, we display the attributes of the objects
+
+need to check for user login in this template-->
+    <!-- when user is login, show Watchlist or Remove item depending on whether item is already in watchlist
+    so, we need to check if item is in watchlist after user is authenticated
+    when request string posted to item detail template is not in watchlist, show watchlist button
+    need item and watchlist to compare
+    else show remove item
+if statement must have endif at the end
+request.user is a SimpleLazyObject which has many attributes
+request global object is another data stream which is provided to the  template
+can the view access the request object? Yes. so, view and template can access request object.
+
+-->
+    <!-- if user is login already, show watchlist button-->
+    <!--<form action="{% url 'book' flight.id %}" method="post">
+    {% csrf_token %}
+    <select name="passenger" id="">
+        {% for passenger in non_passengers %}
+            <option value="{{ passenger.id }}">{{ passenger }}</option>
+        {% endfor %}
+    </select>
+    <input type="submit">
+</form>
+-->
+{% block body %}
+    <h2>Active Listings</h2>
+    <h1>{{listitem.item_title}}</h1>
+
+    {% if user.is_authenticated %}
+        {%if listitem.id in watchlist %}
+            <form action="{% url 'listing_detail' listitem.id  %}" method="post">
+                {% csrf_token %}
+                <button type="submit" name="Remove_key" value="Remove_value">Remove_Item</button>
+            </form>
+        {% else %}
+            <form action="{% url 'listing_detail' listitem.id  %}" method="post">
+                {% csrf_token %}
+                <button type="submit" value="Watchlist" name="Watchlist">Watchlist</button>
+            </form>
+        {% endif %}
+    {% endif %}
+
+    <img src={{listitem.image_link}} alt="Smiley face" height="142" width="242">
+    <h5>{{listitem.item_desc}}</h5>
+    <h5>Price: ${{listitem.item_price}}</h5>
+    <br>Created {{listitem.list_datetime}}
+        {{ listitem.winner.id }}
+
+
+
+    {%if isOwnerCheck %}
+        <form action="{% url 'listing_detail' listitem.id  %}" method="post">
+            {% csrf_token %}
+            <button type="submit" name="Close">Close Bid</button>
+        </form>
+    {% else %}
+        <form action="{% url 'listing_detail' listitem.id  %}" method="post">
+            {% csrf_token %} 
+            <label for="name"> {{number_of_bids}} Bids so far. Your bid is the current bid.</label><br>
+            <label>123 {{error}} 456</label><br>
+            {{SubmitBidForm}}        
+            <button type="submit" name="BidButton">Place Bid</button>
+
+            <label for="name"> Add comments to the listing </label><br>
+            {{commentForm}}        
+            <button type="submit" name="CommentButton">Add Comment</button><br>
+        </form>
+    {% endif %}
+    <!--
+    <form action="{% url 'listing_detail' listitem.id  %}" method="post">
+        {% csrf_token %} 
+        <label for="name"> Add comments to the listing </label><br>
+        {{commentForm}}        
+        <button type="submit" name="CommentButton">Add Comment</button><br>
+    </form>
+    -->
+
+    {% for c in comments %}
+        {{c.content}} <lable>by</lable> {{c.author}} <label>on</label> {{c.createddatetime}}<br>
+    {% endfor %}
+{% endblock %}
+
+

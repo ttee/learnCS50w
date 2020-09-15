@@ -1,0 +1,28 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Categories in Listings</h2>
+
+        <table style="width:100%">
+            
+        
+        {% for listing in list_set %}
+        <tr>
+            <!-- <td><img src={{listing.image_link}} alt="Smiley face" height="142" width="242"> </td> -->
+            <td><h5><a href="{% url 'same_category' listing %}">{{listing}}</h5></a>
+            </td>
+
+        </tr>
+        {% endfor %}
+    
+{% endblock %}
+
+<!--
+    1. change layout of active listing  HTML so that there is a hyperlink to the listing detail template
+            {% url 'listing ID url' listingID %} in the listing detail template
+        before this step, i need to define the listingID parameter
+    2. define the hyperlink argument which is passed as the context to the listing detail template
+        listingID = AuctionListing.item.id
+
+    3. get the UID from the auction listing model line item
+-->
