@@ -7,8 +7,8 @@
 .searchbar {
  
 
-    
-    color: rgba(0,0,0,.87);
+    background-color: #fff;
+    border: 1px solid #dfe1e5;
     word-wrap: break-word;
     outline: none;
     display: flex;
@@ -21,6 +21,7 @@
     border-radius: 25px;
     width: 100%;
     margin: 5px 0px;
+    padding-left: 5%;
 
 }
 
@@ -56,12 +57,12 @@ form {
     padding: 0 16px;
     line-height: 27px;
     height: 36px;
-    min-width: 54px;
+    /* min-width: 54px; */
     text-align: center;
     cursor: pointer;
     user-select: none;
-    margin: 5px 0px;
-    width: 50%;
+    /* width: 50%; */
+    display:inline-block;
 }
 
 .center {
@@ -79,3 +80,23 @@ form {
     border: 1px solid #3079ed;
     color: #fff;
 }
+
+.inner-addon {
+    position: relative;
+  }
+  
+  /* style glyph */
+.inner-addon .glyphicon {
+    position: absolute;
+    padding: 10px;
+    pointer-events: none;
+  }
+  
+  /* align glyph */
+.right-addon .glyphicon { left: 0px;}
+
+.searchbar:hover {
+    box-shadow: 0 1px 6px 0 rgba(32,33,36,0.28);
+    border-color: rgba(223,225,229,0);
+}
+  
