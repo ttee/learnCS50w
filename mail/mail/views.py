@@ -23,18 +23,15 @@ def index(request):
 
 @csrf_exempt
 @login_required
-def compose(request): #request parameter to compose function is an object
+def compose(request):
 
     # Composing a new email must be via POST
     if request.method != "POST":
         return JsonResponse({"error": "POST request required."}, status=400)
 
     # Check recipient emails
-    data = json.loads(request.body) #request.body is a byte string in a json format. load it as an object call data
- 
-    emails = [email.strip() for email in data.get("recipients", "").split(",")] # insert data.get("recipient", "") to prevent error crashing server #since data is a dictionary, so we can call data.get(key)
-    print(emails)
-    
+    data = json.loads(request.body)
+    emails = [email.strip() for email in data.get("recipients").split(",")]
     if emails == [""]:
         return JsonResponse({
             "error": "At least one recipient required."
@@ -57,11 +54,11 @@ def compose(request): #request parameter to compose function is an object
 
     # Create one email for each recipient, plus sender
     users = set()
-    users.add(request.user) #add sender as user object
-    users.update(recipients) #add a list of user to users set
+    users.add(request.user)
+    users.update(recipients)
     for user in users:
         email = Email(
-            user=user, #recipient = user in user set
+            user=user,
             sender=request.user,
             subject=subject,
             body=body,
@@ -96,6 +93,7 @@ def mailbox(request, mailbox):
 
     # Return emails in reverse chronologial order
     emails = emails.order_by("-timestamp").all()
+    print(emails)
     return JsonResponse([email.serialize() for email in emails], safe=False)
 
 
