@@ -30,17 +30,40 @@ function load_mailbox(mailbox) {
   document.querySelector('#compose-view').style.display = 'none';
 
   // Show the mailbox name
-  document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
+  // document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
 
   fetch('/emails/inbox')
   .then(response => response.json())
   .then(emails => {
       // Print emails
       console.log(emails);
-
+  
       // ... do something else with emails ...
-      document.querySelector('#emails-view').innerHTML = `<h4>${emails[i].sender}</h4>`;
+      body = []
+      for (i = 0; i < emails.length; i++){
+        body.push(`
+        <tr>
+            <td>${emails[i].sender}</td>
+            <td>${emails[i].subject}</td>
+        </tr>
+        `
+        )
+      }
+      document.querySelector('#emails-view').innerHTML = `
+      <table>
+    <thead>
+    <tr>
+        <th>Sender</th>
+        <th>Subject</th>
+    </tr>
+    </thead>
+    <tbody>
+      ${body}
+    </tbody>
+    </table>
+      `;
   });
+
 }
 
 function send_email(event) {
@@ -63,6 +86,5 @@ function send_email(event) {
       } else {
         alert(result.error);
       }
-    
   });
 }
