@@ -271,3 +271,7 @@ function compose_post_pagination(user_id, page_obj) {
             `
 return body
 }
+
+function save_post() {
+  
+}
