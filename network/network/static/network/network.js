@@ -253,12 +253,6 @@ function compose_post_pagination(user_id, page_obj) {
     else {
       next = ''
     }
-    // if (page_obj.has_next) {
-    //   next = `<a href="javascript:load_post_page('${user_id}', ${page_obj.next_page_number})">next</a>
-    //   <a href="javascript:load_post_page('${user_id}','${page_obj.num_pages }')">last &raquo;</a><p><p><p><p>`  }
-    // else {
-    //   next = ''
-    // }
 
     body = `
               <span class="step-links">
@@ -273,5 +267,5 @@ return body
 }
 
 function save_post() {
-  
+
 }
