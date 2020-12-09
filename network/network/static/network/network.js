@@ -170,6 +170,8 @@ function compose_post_table(posts) {
   return  `${body.join('\n')}`
 }
 
+// reason for asynchronous function is because we are using await to wait
+// for the response from the server : fetch(url) command
 async function load_posts(user_id, pagenum) {
   if (pagenum == null) {
     pagenum = 1
@@ -215,6 +217,7 @@ function follow() {
     }
   }
   );
+  // other function
 }
 
 function compose_post_pagination(user_id, page_obj) {
@@ -235,21 +238,22 @@ function compose_post_pagination(user_id, page_obj) {
     //   prev = `<a href="javascript:load_post_page('${user_id}', 1)">&laquo; First</a>
     //   <a href="javascript:load_post_page('${user_id}','${page_obj.previous_page_number }')">previous</a><p><p><p><p>`
     // }
-    if (page_obj.has_next) {
+    if (page_obj.has_previous) {
       // load_post_page(user_id, 1);
       // load_post_page('all', 1);
       //first page href declaration
       //<<next last>>
-      prev = `<a href="javascript:load_post_page('${user_id}','${page_obj.num_pages }')">&laquo; First</a>
-      <a href="javascript:load_post_page('${user_id}', ${page_obj.next_page_number})">previous</a><p><p><p><p>`
+      prev = `<a href="javascript:load_post_page('${user_id}', 1)">First &laquo;</a>
+      <a href="javascript:load_post_page('${user_id}', ${page_obj.previous_page_number})">previous</a><p><p><p><p>`
     }
     else {
       prev = ''
     }
 
-    if (page_obj.has_previous) {
-      next = `<a href="javascript:load_post_page('${user_id}', ${page_obj.previous_page_number})">next</a>
-      <a href="javascript:load_post_page('${user_id}', 1)">last &raquo;</a><p><p><p><p>`  }
+    if (page_obj.has_next) {
+      next = `<a href="javascript:load_post_page('${user_id}', ${page_obj.next_page_number})">next</a>
+      <a href="javascript:load_post_page('${user_id}','${page_obj.num_pages }')">&raquo; Last</a>
+      <p><p><p><p>`  }
     else {
       next = ''
     }
@@ -258,7 +262,7 @@ function compose_post_pagination(user_id, page_obj) {
               <span class="step-links">
                   ${prev}
                   <span class="current">
-                      Page ${page_obj.num_pages + 1 - page_obj.number } of ${page_obj.num_pages}<p><p><p><p>.
+                      Page ${page_obj.number } of ${page_obj.num_pages}<p><p><p><p>.
                   </span>
                   ${next}
               </span>
