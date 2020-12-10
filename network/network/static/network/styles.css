@@ -125,6 +125,10 @@ border-radius: 0;
 .edit-button {
     
 }
+
+.edit-textarea {
+    
+}
 .table tr.active td {
     background-color:#4d4f50;
     color: white;

@@ -6,8 +6,8 @@ document.addEventListener('DOMContentLoaded', function() {
     //a.href = "somelink url"
     // Use buttons to toggle between views
     
-    document.querySelector('#following_posts').href = "javascript:load_post_page('following')"
-    document.querySelector('#all_posts').href = "javascript:load_post_page('all')"
+    document.querySelector('#following_posts').href = "javascript:load_post_page('following')";
+    document.querySelector('#all_posts').href = "javascript:load_post_page('all')";
     //document.querySelector('#new_post').addEventListener('click', () => new_post('request'));
     document.querySelector('#new_post').addEventListener('submit', new_post);
   // in the context of "new_post", javascript eventlistener triggers new_post function when there is a submit click
@@ -87,7 +87,7 @@ function load_post_page(user_id, pagenum) {
       // set title to Following
       // diable the profile-view
       document.querySelector('#all-posts-view').innerHTML =compose_post_table(response["posts"])
-      document.querySelector('#edit-textarea').style.display = 'none';
+      document.querySelector(`#edit-textarea-${post_id}`).style.display = 'none';
       document.querySelector('#title-of-page').innerHTML ="Following Posts"
 
       if (document.querySelector('#profile-view') != null) {
@@ -103,10 +103,9 @@ function load_post_page(user_id, pagenum) {
       // set title to Username
       // enable the profile-view
       document.querySelector('#all-posts-view').innerHTML =compose_post_table(response["posts"])
-      document.querySelector('#edit-textarea').style.display = 'none';
+      document.querySelector(`#edit-textarea-${post_id}`).style.display = 'none';
       document.querySelector('#title-of-page').innerHTML =`Profile of ${user_id}`
-      let edit_buttons = document.querySelectorAll('edit-button');
-
+      
       // for (i = 0; i < edit_buttons.length; i ++) {
       //   edit_buttons[i].addEventListener('click', edit_post(post_id));
       // }
@@ -117,7 +116,21 @@ function load_post_page(user_id, pagenum) {
   }
 }
 
+function save_post(post_id) {
+
+  document.querySelector(`#save-button-${post_id}`).style.display = 'none';
+  document.querySelector(`#edit-button-${post_id}`).style.display = 'block';
+  document.querySelector(`#post-content-${post_id}`).style.display = 'block';
+  document.querySelector(`#edit-textarea-${post_id}`).style.display = 'none';
+
+  // define a url for api call
+  // implement view being called by url
+  // fetch url and process the response
+}
+
+
 function edit_post(post_id) {
+  
   console.log("Edit clicked") 
   // edit button:
   //      once clicked:
@@ -126,9 +139,11 @@ function edit_post(post_id) {
  //replace the post with innerhtml for textarea
  //select a component in this HTML page to modify using javascript
   
-  document.querySelector('#edit-textarea').style.display = 'block';
+  document.querySelector(`#edit-textarea-${post_id}`).style.display = 'block';
   console.log(post_id)
   document.querySelector(`#post-content-${post_id}`).style.display = 'none';
+  document.querySelector(`#save-button-${post_id}`).style.display = 'block';
+  document.querySelector(`#edit-button-${post_id}`).style.display = 'none';
 }
  
 function compose_post_table(posts) {
@@ -157,8 +172,9 @@ function compose_post_table(posts) {
       <div id="post-content-${post_id}"> ${a[i].content}</div>
       <!--based on the button text, we will toggle between Edit and Save button -->
 
-      <button class="edit-button" onclick="edit_post('${post_id}')">Edit</button>
-      <div id="edit-textarea"><textarea class="form-control" id="compose-body" placeholder="Body">${a[i].content}</textarea> </div>
+      <button id="save-button-${post_id}" style="display:none;" onclick="save_post('${post_id}')">Save</button>
+      <button id="edit-button-${post_id}" style="display:block;" onclick="edit_post('${post_id}')">Edit</button>
+      <div id="edit-textarea-${post_id}" style="display:none;"><textarea class="form-control" id="compose-body" placeholder="Body">${a[i].content}</textarea> </div>
       ${a[i].numlikes}
       </tbody>
       </table>
@@ -270,6 +286,3 @@ function compose_post_pagination(user_id, page_obj) {
 return body
 }
 
-function save_post() {
-
-}
