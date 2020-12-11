@@ -124,8 +124,26 @@ function save_post(post_id) {
   document.querySelector(`#edit-textarea-${post_id}`).style.display = 'none';
 
   // define a url for api call
+  // TODO: include csrf token
+  url = `/posts/${post_id}`
+  fetch(url, {
+    method: 'POST',
+    body: JSON.stringify({
+         //TODO:  get the latest context
+        content: document.querySelector(`#edit-textarea-${post_id}`).textContent, 
+    })
+  })
+  .then (response => response.json())
+  .then (result => {
   // implement view being called by url
   // fetch url and process the response
+    if (typeof(result.message) === "string"){
+      //load_mailbox('sent');
+      alert("SAVE DONE")
+    }
+  }
+  );
+  
 }
 
 

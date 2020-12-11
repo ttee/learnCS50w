@@ -37,6 +37,28 @@ def profile(request, user_id):
     else:
         return HttpResponseRedirect(reverse("login"))
 
+@csrf_exempt
+def save_post(request, post_id):
+    # check the method that server script is being called.
+    # If POST method is used, it means there is data to be received
+    if request.method == "POST":
+        # get the body of the request and assign the content to a dictionary called data
+        # request looks like this : 
+        # "{'content': 'literal post content'; 'dict key': dict value; .....}"
+        data = json.loads(request.body)
+        # from the data, get the content of the post to be saved as below:
+        data_to_be_saved = data['content']
+        print(data_to_be_saved)
+        # Query the Post Model to get the instance with the same post_id as the request from client
+        post_to_be_modified = Post.objects.get(id=post_id)
+        # Assign the content of the data to this instance in the Post Model 
+        post_to_be_modified.content = data_to_be_saved
+        # use the Django function in the Post object class to SAVE the data into the database
+        post_to_be_modified.save()
+        # return a success response to the client
+        return JsonResponse({"message": "Post save successfully."}, status=201)
+    return JsonResponse({"error": "Request method not supported."}, status=400)
+
 def login_view(request):
     if request.method == "POST":
 
