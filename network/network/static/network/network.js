@@ -118,10 +118,7 @@ function load_post_page(user_id, pagenum) {
 
 function save_post(post_id) {
 
-  document.querySelector(`#save-button-${post_id}`).style.display = 'none';
-  document.querySelector(`#edit-button-${post_id}`).style.display = 'block';
-  document.querySelector(`#post-content-${post_id}`).style.display = 'block';
-  document.querySelector(`#edit-textarea-${post_id}`).style.display = 'none';
+
 
   // define a url for api call
   // TODO: include csrf token
@@ -130,16 +127,20 @@ function save_post(post_id) {
     method: 'POST',
     body: JSON.stringify({
          //TODO:  get the latest context
-        content: document.querySelector(`#edit-textarea-${post_id}`).textContent, 
+        content: document.querySelector(`#compose-body-${post_id}`).value, 
     })
   })
+    // views.py being called by url
   .then (response => response.json())
+    // fetch url and process the response which has been assigned to result
   .then (result => {
-  // implement view being called by url
-  // fetch url and process the response
     if (typeof(result.message) === "string"){
-      //load_mailbox('sent');
-      alert("SAVE DONE")
+      // take what has been saved in the server and display on the post message
+      document.querySelector(`#post-content-${post_id}`).textContent = result.saved_post
+      document.querySelector(`#save-button-${post_id}`).style.display = 'none';
+      document.querySelector(`#edit-button-${post_id}`).style.display = 'block';
+      document.querySelector(`#post-content-${post_id}`).style.display = 'block';
+      document.querySelector(`#edit-textarea-${post_id}`).style.display = 'none';
     }
   }
   );
@@ -192,7 +193,7 @@ function compose_post_table(posts) {
 
       <button id="save-button-${post_id}" style="display:none;" onclick="save_post('${post_id}')">Save</button>
       <button id="edit-button-${post_id}" style="display:block;" onclick="edit_post('${post_id}')">Edit</button>
-      <div id="edit-textarea-${post_id}" style="display:none;"><textarea class="form-control" id="compose-body" placeholder="Body">${a[i].content}</textarea> </div>
+      <div id="edit-textarea-${post_id}" style="display:none;"><textarea class="form-control" id="compose-body-${post_id}" placeholder="Body">${a[i].content}</textarea> </div>
       ${a[i].numlikes}
       </tbody>
       </table>

@@ -48,7 +48,7 @@ def save_post(request, post_id):
         data = json.loads(request.body)
         # from the data, get the content of the post to be saved as below:
         data_to_be_saved = data['content']
-        print(data_to_be_saved)
+
         # Query the Post Model to get the instance with the same post_id as the request from client
         post_to_be_modified = Post.objects.get(id=post_id)
         # Assign the content of the data to this instance in the Post Model 
@@ -56,7 +56,8 @@ def save_post(request, post_id):
         # use the Django function in the Post object class to SAVE the data into the database
         post_to_be_modified.save()
         # return a success response to the client
-        return JsonResponse({"message": "Post save successfully."}, status=201)
+        print(Post.objects.get(id=post_id).content)
+        return JsonResponse({"message": "Post save successfully.", "saved_post":Post.objects.get(id=post_id).content}, status=201)
     return JsonResponse({"error": "Request method not supported."}, status=400)
 
 def login_view(request):
