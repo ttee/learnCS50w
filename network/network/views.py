@@ -39,6 +39,10 @@ def profile(request, user_id):
 
 @csrf_exempt
 def save_post(request, post_id):
+    # TODO:
+    # non-login user should not be able to modify post
+    # non-owner should not be able to modify post
+    
     # check the method that server script is being called.
     # If POST method is used, it means there is data to be received
     if request.method == "POST":
