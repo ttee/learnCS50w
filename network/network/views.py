@@ -40,9 +40,12 @@ def profile(request, user_id):
 @csrf_exempt
 def save_post(request, post_id):
     # TODO:
-    # non-login user should not be able to modify post
-    # non-owner should not be able to modify post
-    
+    # explore the difference between CSRF and sessionid
+    # remove csrf_exempt
+    if not request.user.is_authenticated:
+        return JsonResponse({"error": "Unathorised access not supported."}, status=400)
+    print(pretty_request(request))
+    print(request.user)
     # check the method that server script is being called.
     # If POST method is used, it means there is data to be received
     if request.method == "POST":
@@ -50,6 +53,7 @@ def save_post(request, post_id):
         # request looks like this : 
         # "{'content': 'literal post content'; 'dict key': dict value; .....}"
         data = json.loads(request.body)
+
         # from the data, get the content of the post to be saved as below:
         data_to_be_saved = data['content']
 
@@ -58,7 +62,10 @@ def save_post(request, post_id):
         # Assign the content of the data to this instance in the Post Model 
         post_to_be_modified.content = data_to_be_saved
         # use the Django function in the Post object class to SAVE the data into the database
-        post_to_be_modified.save()
+        if request.user != post_to_be_modified.author:
+            return JsonResponse({"error": "You are not the author. Saving not authorised."}, status=400)
+        else:
+            post_to_be_modified.save()
         # return a success response to the client
         print(Post.objects.get(id=post_id).content)
         return JsonResponse({"message": "Post save successfully.", "saved_post":Post.objects.get(id=post_id).content}, status=201)
@@ -232,3 +239,26 @@ def update_user_following(request, followed_user):
     A.save()
     print("Saved A")
     return JsonResponse({"message": "FollowButton clicked successfully."}, status=201)
+
+
+def pretty_request(request):
+    headers = ''
+    for header, value in request.META.items():
+        if not header.startswith('HTTP'):
+            continue
+        header = '-'.join([h.capitalize() for h in header[5:].lower().split('_')])
+        headers += '{}: {}\n'.format(header, value)
+
+    return (
+        '{method} HTTP/1.1\n'
+        'Content-Length: {content_length}\n'
+        'Content-Type: {content_type}\n'
+        '{headers}\n\n'
+        '{body}'
+    ).format(
+        method=request.method,
+        content_length=request.META['CONTENT_LENGTH'],
+        content_type=request.META['CONTENT_TYPE'],
+        headers=headers,
+        body=request.body,
+    )
