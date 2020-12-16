@@ -31,10 +31,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
   function new_post(event) {
     event.preventDefault();
+    csrf_token = document.querySelector("div > input").value
 
+    headers = new Headers({
+      'X-CSRFToken': csrf_token
+    });
     // compose POST request that contains the post content
     fetch('/posts', {
       method: 'POST',
+      headers,
       body: JSON.stringify({
           content: document.querySelector('#compose-body').value, 
       })

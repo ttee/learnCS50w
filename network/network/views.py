@@ -122,8 +122,9 @@ def register(request):
     else:
         return render(request, "network/register.html")
 
-@csrf_exempt
+
 def refresh_post(request):
+    print(pretty_request(request))
     if request.method == "POST":
         data = json.loads(request.body)
         #read the content of the request and save the request into the database
