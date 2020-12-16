@@ -37,7 +37,7 @@ def profile(request, user_id):
     else:
         return HttpResponseRedirect(reverse("login"))
 
-@csrf_exempt
+
 def save_post(request, post_id):
     # TODO:
     # explore the difference between CSRF and sessionid

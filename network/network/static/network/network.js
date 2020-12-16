@@ -117,14 +117,18 @@ function load_post_page(user_id, pagenum) {
 }
 
 function save_post(post_id) {
+  csrf_token = document.querySelector("div > input").value
 
-
+  headers = new Headers({
+    'X-CSRFToken': csrf_token
+  });
 
   // define a url for api call
   // TODO: include csrf token
   url = `/posts/${post_id}`
   fetch(url, {
     method: 'POST',
+    headers,
     body: JSON.stringify({
          //TODO:  get the latest context
         content: document.querySelector(`#compose-body-${post_id}`).value, 
