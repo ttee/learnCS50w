@@ -176,7 +176,7 @@ function edit_post(post_id) {
  
 function compose_post_table(posts) {
   body = []
-
+  currentUser = document.querySelector(`#profile`).href.split('/')[3]
   //for (i = results.posts.length -1;i > -1;  i--){
 
   a = posts
@@ -189,6 +189,10 @@ function compose_post_table(posts) {
   //             - copy the post content to the text editting area
   for (let i in a) {
       post_id = a[i].id
+      displayParam = 'block'
+      if (currentUser != a[i].user){
+        displayParam = 'none';
+      }
       body.push(`
       <div class=mystyle>
       <table class="table table-hover mails">
@@ -200,8 +204,9 @@ function compose_post_table(posts) {
       <div id="post-content-${post_id}"> ${a[i].content}</div>
       <!--based on the button text, we will toggle between Edit and Save button -->
 
+       
       <button id="save-button-${post_id}" style="display:none;" onclick="save_post('${post_id}')">Save</button>
-      <button id="edit-button-${post_id}" style="display:block;" onclick="edit_post('${post_id}')">Edit</button>
+      <button id="edit-button-${post_id}" style="display:${displayParam};" onclick="edit_post('${post_id}')">Edit</button>
       <div id="edit-textarea-${post_id}" style="display:none;"><textarea class="form-control" id="compose-body-${post_id}" placeholder="Body">${a[i].content}</textarea> </div>
       ${a[i].numlikes}
       </tbody>
