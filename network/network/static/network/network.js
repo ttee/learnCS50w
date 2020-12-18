@@ -121,6 +121,28 @@ function load_post_page(user_id, pagenum) {
   }
 }
 
+function like_post(post_id) {
+  csrf_token = document.querySelector("div > input").value
+
+  headers = new Headers({
+    'X-CSRFToken': csrf_token
+  });
+  url = `/likes`
+  fetch(url, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({
+      postid: post_id,
+    })
+  })
+  .then (response => response.json())
+  .then (result => {
+    if (typeof(result.message) === "string"){
+      document.querySelector(`#unlike-button${post_id}`).style.display = 'block';
+      document.querySelector(`#like-button${post_id}`).style.display = 'none';
+    }
+}
+
 function save_post(post_id) {
   csrf_token = document.querySelector("div > input").value
 
@@ -193,6 +215,10 @@ function compose_post_table(posts) {
       if (currentUser != a[i].user){
         displayParam = 'none';
       }
+      LikeParam = 'block'
+      // if (currentUser != a[i].user){
+      //   displayParam = 'none';
+      // }
       body.push(`
       <div class=mystyle>
       <table class="table table-hover mails">
@@ -204,7 +230,8 @@ function compose_post_table(posts) {
       <div id="post-content-${post_id}"> ${a[i].content}</div>
       <!--based on the button text, we will toggle between Edit and Save button -->
 
-       
+      <button id="like-button-${post_id}" style="display:${LikeParam};" onclick="like_post('${post_id}')">Like</button>
+      <button id="unlike-button-${post_id}" style="display:none;" onclick="like_post('${post_id}')">UnLike</button>
       <button id="save-button-${post_id}" style="display:none;" onclick="save_post('${post_id}')">Save</button>
       <button id="edit-button-${post_id}" style="display:${displayParam};" onclick="edit_post('${post_id}')">Edit</button>
       <div id="edit-textarea-${post_id}" style="display:none;"><textarea class="form-control" id="compose-body-${post_id}" placeholder="Body">${a[i].content}</textarea> </div>

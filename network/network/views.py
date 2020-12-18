@@ -37,6 +37,34 @@ def profile(request, user_id):
     else:
         return HttpResponseRedirect(reverse("login"))
 
+def like_post(request, post_id):
+    if not request.user.is_authenticated:
+        return JsonResponse({"error": "Unathorised access not supported."}, status=400)
+    if request.method == "POST":
+        data = json.loads(request.body)
+        if Like.objects.get(user=request.user, post=post_id):
+            return JsonResponse({"message":"Post already liked"}, status=201)
+        else:
+            like = Like(
+                user=request.user_id,
+                post=post_id,
+            )
+            like.save()
+            return JsonResponse({"message": "Post liked successfully."}, status=201)
+    else:
+        return JsonResponse({"message": "Only POST method supported."}, status=201)
+# like table is empty at first, 
+# when a post is liked, 
+# get like_id where postid = postid-liked-from-request and where user = userid-from-request
+# Like table
+# id user     post
+# 1      2     1
+# 2      2     2
+# if Like.objects.get(user = request.user && post = post_id) does not exist:
+# create new like
+# # if Like.objects.get(user = request.user && post = post_id) exists:
+# dont do anything
+
 
 def save_post(request, post_id):
     # TODO:

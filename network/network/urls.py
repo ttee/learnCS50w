@@ -14,6 +14,9 @@ urlpatterns = [
     # API Routes
     path("posts", views.refresh_post, name="refresh_post"),
     path("posts/<int:post_id>", views.save_post, name="save_post"),
+
+
+    path("likes", views.like_post, name="like_post"),
     # add route for following posts
     path("posts/following", views.refresh_following_posts, name="refresh_following_posts"),
     path("users/<int:user_id>/posts", views.refresh_user_post, name="refresh_user_post"),
