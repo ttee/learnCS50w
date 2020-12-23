@@ -141,6 +141,7 @@ function like_post(post_id) {
       document.querySelector(`#unlike-button${post_id}`).style.display = 'block';
       document.querySelector(`#like-button${post_id}`).style.display = 'none';
     }
+  })
 }
 
 function save_post(post_id) {

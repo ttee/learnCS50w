@@ -7,7 +7,7 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django import forms
-from .models import User, Post
+from .models import User, Post, Like
 from django.views.decorators.csrf import csrf_exempt
 
 def index(request):
@@ -37,17 +37,22 @@ def profile(request, user_id):
     else:
         return HttpResponseRedirect(reverse("login"))
 
-def like_post(request, post_id):
+def like_post(request):
     if not request.user.is_authenticated:
         return JsonResponse({"error": "Unathorised access not supported."}, status=400)
     if request.method == "POST":
         data = json.loads(request.body)
-        if Like.objects.get(user=request.user, post=post_id):
+        print('this is the data ', data)
+        post = Post.objects.get(id = data['postid'])
+        user = request.user
+        print('this is the post', post)
+        print('this is the request', request)
+        if Like.objects.filter(user=request.user, post=post):
             return JsonResponse({"message":"Post already liked"}, status=201)
         else:
             like = Like(
-                user=request.user_id,
-                post=post_id,
+                user=user,
+                post=post,
             )
             like.save()
             return JsonResponse({"message": "Post liked successfully."}, status=201)
