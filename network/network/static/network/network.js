@@ -138,8 +138,14 @@ function like_post(post_id) {
   .then (response => response.json())
   .then (result => {
     if (typeof(result.message) === "string"){
-      document.querySelector(`#unlike-button${post_id}`).style.display = 'block';
-      document.querySelector(`#like-button${post_id}`).style.display = 'none';
+      console.log(result.state)
+      if (result.state == 'like') {
+        document.querySelector(`#like-button-${post_id}`).style.display = 'block';
+        document.querySelector(`#unlike-button-${post_id}`).style.display = 'none';
+      } else {
+        document.querySelector(`#unlike-button-${post_id}`).style.display = 'block';
+        document.querySelector(`#like-button-${post_id}`).style.display = 'none';
+      }
     }
   })
 }

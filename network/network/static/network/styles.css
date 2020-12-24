@@ -129,6 +129,14 @@ border-radius: 0;
 .edit-textarea {
     
 }
+
+.unlike-button {
+    
+}
+
+.like-button {
+    
+}
 .table tr.active td {
     background-color:#4d4f50;
     color: white;

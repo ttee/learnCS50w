@@ -42,20 +42,22 @@ def like_post(request):
         return JsonResponse({"error": "Unathorised access not supported."}, status=400)
     if request.method == "POST":
         data = json.loads(request.body)
-        print('this is the data ', data)
+
         post = Post.objects.get(id = data['postid'])
         user = request.user
-        print('this is the post', post)
-        print('this is the request', request)
-        if Like.objects.filter(user=request.user, post=post):
-            return JsonResponse({"message":"Post already liked"}, status=201)
+
+        UnlikeItem = Like.objects.filter(user=request.user, post=post)
+        print(UnlikeItem)
+        if UnlikeItem:
+            UnlikeItem.delete()
+            return JsonResponse({"message":"Post has been unliked", "state":"unlike"}, status=201)
         else:
             like = Like(
                 user=user,
                 post=post,
             )
             like.save()
-            return JsonResponse({"message": "Post liked successfully."}, status=201)
+            return JsonResponse({"message": "Post liked successfully.", "state":"like"}, status=201)
     else:
         return JsonResponse({"message": "Only POST method supported."}, status=201)
 # like table is empty at first, 
