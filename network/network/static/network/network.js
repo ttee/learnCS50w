@@ -204,6 +204,9 @@ function edit_post(post_id) {
 }
  
 function compose_post_table(posts) {
+  //has access to ser_posts
+  //       ser_posts[i]['liked'] = has_been_liked_by_request_user
+  console.log(posts)
   body = []
   currentUser = document.querySelector(`#profile`).href.split('/')[3]
   //for (i = results.posts.length -1;i > -1;  i--){

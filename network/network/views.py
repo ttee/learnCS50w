@@ -181,12 +181,24 @@ def refresh_post(request):
         print(page_number)
         page_obj = paginator.get_page(page_number)
 
-        ser_posts = [post.serialize() for post in page_obj] 
-        
         #serialize function returns a dictionary, serialize function is defined in models.py
         #so post.serialize() returns a dictionary for each post in posts. this becomes a list of dictionaries
         #then we return to JsonResponse a dictionary with key "posts" pointing to a list of dictionaries
         
+        ser_posts = [post.serialize() for post in page_obj] 
+    
+        # for each of the posts, need to include info about the like-relationship bw the post and request user
+        # include a key 'liked', indicating whether the request user has liked the post
+        # if the request user has liked the post, 
+        for i, post in enumerate(page_obj):
+            has_been_liked_by_request_user = False
+            likes = Like.objects.filter(post = post)
+            for like in likes:
+                if like.user == request.user:
+                    has_been_liked_by_request_user = True # logic here to check if the request user has liked this post
+                else:
+                    has_been_liked_by_request_user = False
+            ser_posts[i]['liked'] = has_been_liked_by_request_user
         # create a context that contains
         # posts
         # attributes of the paginator

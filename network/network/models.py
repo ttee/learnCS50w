@@ -58,6 +58,7 @@ class Like(models.Model):
 # 6      2     5
 # 7      3     5
 
+# get user from Like object where Post = current post
      
 
 # # User table
