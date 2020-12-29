@@ -50,14 +50,16 @@ def like_post(request):
         print(UnlikeItem)
         if UnlikeItem:
             UnlikeItem.delete()
-            return JsonResponse({"message":"Post has been unliked", "state":"unlike"}, status=201)
+            numlikes = post.likes.count()
+            return JsonResponse({"message":"Post has been unliked", "state":"unlike","numlikes": numlikes}, status=201)
         else:
             like = Like(
                 user=user,
                 post=post,
             )
             like.save()
-            return JsonResponse({"message": "Post liked successfully.", "state":"like"}, status=201)
+            numlikes = post.likes.count()
+            return JsonResponse({"message": "Post liked successfully.", "state":"like", "numlikes": numlikes}, status=201)
     else:
         return JsonResponse({"message": "Only POST method supported."}, status=201)
 # like table is empty at first, 
@@ -67,6 +69,7 @@ def like_post(request):
 # id user     post
 # 1      2     1
 # 2      2     2
+# 3      1     1
 # if Like.objects.get(user = request.user && post = post_id) does not exist:
 # create new like
 # # if Like.objects.get(user = request.user && post = post_id) exists:
@@ -178,7 +181,7 @@ def refresh_post(request):
         paginator = Paginator(posts, 10)
         # if page not provided in request, return the latest page
         page_number = request.GET.get('page')
-        print(page_number)
+        print("BABA", page_number)
         page_obj = paginator.get_page(page_number)
 
         #serialize function returns a dictionary, serialize function is defined in models.py
@@ -198,7 +201,8 @@ def refresh_post(request):
                     has_been_liked_by_request_user = True # logic here to check if the request user has liked this post
                 else:
                     has_been_liked_by_request_user = False
-            ser_posts[i]['liked'] = has_been_liked_by_request_user
+            ser_posts[i]['liked_by_request_user'] = has_been_liked_by_request_user
+        print(ser_posts)
         # create a context that contains
         # posts
         # attributes of the paginator

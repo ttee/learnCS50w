@@ -139,12 +139,13 @@ function like_post(post_id) {
   .then (result => {
     if (typeof(result.message) === "string"){
       console.log(result.state)
+      console.log(result.numlikes)
       if (result.state == 'like') {
-        document.querySelector(`#like-button-${post_id}`).style.display = 'block';
-        document.querySelector(`#unlike-button-${post_id}`).style.display = 'none';
-      } else {
-        document.querySelector(`#unlike-button-${post_id}`).style.display = 'block';
         document.querySelector(`#like-button-${post_id}`).style.display = 'none';
+        document.querySelector(`#unlike-button-${post_id}`).style.display = 'block';
+      } else {
+        document.querySelector(`#unlike-button-${post_id}`).style.display = 'none';
+        document.querySelector(`#like-button-${post_id}`).style.display = 'block';
       }
     }
   })
@@ -206,11 +207,11 @@ function edit_post(post_id) {
 function compose_post_table(posts) {
   //has access to ser_posts
   //       ser_posts[i]['liked'] = has_been_liked_by_request_user
-  console.log(posts)
+  console.log("this is from server:", posts)
   body = []
   currentUser = document.querySelector(`#profile`).href.split('/')[3]
   //for (i = results.posts.length -1;i > -1;  i--){
-
+ 
   a = posts
   // for each post
   // we have a div for each post
@@ -225,7 +226,14 @@ function compose_post_table(posts) {
       if (currentUser != a[i].user){
         displayParam = 'none';
       }
-      LikeParam = 'block'
+      if (a[i].liked_by_request_user){
+        LikeParam = 'none';
+        UnlikeParam = 'block';
+      } else {
+        LikeParam = 'block'
+        UnlikeParam = 'none';
+      }
+
       // if (currentUser != a[i].user){
       //   displayParam = 'none';
       // }
@@ -241,7 +249,7 @@ function compose_post_table(posts) {
       <!--based on the button text, we will toggle between Edit and Save button -->
 
       <button id="like-button-${post_id}" style="display:${LikeParam};" onclick="like_post('${post_id}')">Like</button>
-      <button id="unlike-button-${post_id}" style="display:none;" onclick="like_post('${post_id}')">UnLike</button>
+      <button id="unlike-button-${post_id}" style="display:${UnlikeParam};" onclick="like_post('${post_id}')">UnLike</button>
       <button id="save-button-${post_id}" style="display:none;" onclick="save_post('${post_id}')">Save</button>
       <button id="edit-button-${post_id}" style="display:${displayParam};" onclick="edit_post('${post_id}')">Edit</button>
       <div id="edit-textarea-${post_id}" style="display:none;"><textarea class="form-control" id="compose-body-${post_id}" placeholder="Body">${a[i].content}</textarea> </div>
