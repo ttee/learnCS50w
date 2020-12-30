@@ -143,9 +143,12 @@ function like_post(post_id) {
       if (result.state == 'like') {
         document.querySelector(`#like-button-${post_id}`).style.display = 'none';
         document.querySelector(`#unlike-button-${post_id}`).style.display = 'block';
+        document.querySelector(`#numlikes-${post_id}`).textContent = result.numlikes;
       } else {
         document.querySelector(`#unlike-button-${post_id}`).style.display = 'none';
         document.querySelector(`#like-button-${post_id}`).style.display = 'block';
+        document.querySelector(`#numlikes-${post_id}`).textContent = result.numlikes;
+
       }
     }
   })
@@ -253,7 +256,7 @@ function compose_post_table(posts) {
       <button id="save-button-${post_id}" style="display:none;" onclick="save_post('${post_id}')">Save</button>
       <button id="edit-button-${post_id}" style="display:${displayParam};" onclick="edit_post('${post_id}')">Edit</button>
       <div id="edit-textarea-${post_id}" style="display:none;"><textarea class="form-control" id="compose-body-${post_id}" placeholder="Body">${a[i].content}</textarea> </div>
-      ${a[i].numlikes}
+      <label id="numlikes-${post_id}">${a[i].numlikes}</label></b>
       </tbody>
       </table>
       </div>
@@ -270,7 +273,7 @@ async function load_posts(user_id, pagenum) {
   if (pagenum == null) {
     pagenum = 1
   }
-  console.log(pagenum)
+
  if (user_id === 'all') {
     url = `/posts?page=${pagenum}`
   } else if (user_id === 'following') {
