@@ -59,6 +59,12 @@ document.addEventListener('DOMContentLoaded', function() {
     );
   }
 
+function load_post_page_pagination_element(title) {
+  // we need some argument to specify the display of each block
+  // blocks to consider:
+  // - new post
+  // - profile-view (followers/following)
+}
   // other than user_id, load_post_page needs a page info to load the correct pagination
 function load_post_page(user_id, pagenum) {
   if (user_id === 'all') {
@@ -90,8 +96,9 @@ function load_post_page(user_id, pagenum) {
     .then(response => {
       // html stuffs
       // set title to Following
-      // diable the profile-view
+
       document.querySelector('#all-posts-view').innerHTML =compose_post_table(response["posts"])
+
       document.querySelector(`#edit-textarea-${post_id}`).style.display = 'none';
       document.querySelector('#title-of-page').innerHTML ="Following Posts"
 
