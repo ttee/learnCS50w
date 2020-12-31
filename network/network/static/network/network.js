@@ -59,8 +59,18 @@ document.addEventListener('DOMContentLoaded', function() {
     );
   }
 
-function load_post_page_pagination_element(title) {
-  // we need some argument to specify the display of each block
+function load_post_page_pagination_element(response, user_id, title, display_profile) {
+  document.querySelector('#all-posts-view').innerHTML =compose_post_table(response['posts']);
+  document.querySelector('#paged-view').innerHTML = compose_post_pagination(user_id, response['page_obj']);
+  document.querySelector('#title-of-page').innerHTML =title;
+  document.querySelector('#all-posts-view').style.display = 'block';
+  if (display_profile === 'False') {
+    document.querySelector('#profile-view').style.display = 'none';
+  } else {
+    document.querySelector('#profile-view').style.display = 'block';
+  }
+
+
   // blocks to consider:
   // - new post
   // - profile-view (followers/following)
@@ -71,24 +81,26 @@ function load_post_page(user_id, pagenum) {
     // api stuffs
     load_posts(user_id, pagenum)
     .then(response => {
+      load_post_page_pagination_element(response, user_id, 'All Posts', 'False')
       // html stuffs
       // set title to All Posts
       // disable profile-view
-      document.querySelector('#all-posts-view').innerHTML =compose_post_table(response["posts"])
+      // document.querySelector('#all-posts-view').innerHTML =compose_post_table(response["posts"])
 
-      let text_areas = document.querySelectorAll('#edit-textarea');
-      console.log(text_areas)
-      for (i = 0; i < text_areas.length; i ++) {
-         text_areas[i].style.display = 'none';
-       }
-      //document.querySelector('#edit-textarea').style.display = 'none';
-      document.querySelector('#paged-view').innerHTML = compose_post_pagination(user_id, response["page_obj"])
-      document.querySelector('#title-of-page').innerHTML ="All Posts"
+      // // let text_areas = document.querySelectorAll('#edit-textarea');
+      // // console.log(text_areas)
+      // // for (i = 0; i < text_areas.length; i ++) {
+      // //    text_areas[i].style.display = 'none';
+      // //  }
+      // //document.querySelector('#edit-textarea').style.display = 'none';
+      
+      // document.querySelector('#paged-view').innerHTML = compose_post_pagination(user_id, response["page_obj"])
+      // document.querySelector('#title-of-page').innerHTML ="All Posts"
 
-      document.querySelector('#all-posts-view').style.display = 'block';
-      if (document.querySelector('#profile-view') != null) {
-        document.querySelector('#profile-view').style.display = 'none';
-      } 
+      // document.querySelector('#all-posts-view').style.display = 'block';
+      // if (document.querySelector('#profile-view') != null) {
+      //   document.querySelector('#profile-view').style.display = 'none';
+      // } 
     }) 
 
   } else if (user_id === 'following') {
