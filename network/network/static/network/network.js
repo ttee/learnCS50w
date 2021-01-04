@@ -296,9 +296,9 @@ async function load_posts(user_id, pagenum) {
  if (user_id === 'all') {
     url = `/posts?page=${pagenum}`
   } else if (user_id === 'following') {
-    url = `/posts/following`
+    url = `/posts/following?page=${pagenum}`
   } else {
-    url = `/users/${user_id}/posts`
+    url = `/users/${user_id}/posts?page=${pagenum}`
   }
   
   response = await fetch(url)

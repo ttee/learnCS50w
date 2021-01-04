@@ -236,6 +236,23 @@ def refresh_user_post(request, user_id):
 # add a view for following posts
 def refresh_following_posts(request):
 
+    # if request.method == "GET":
+    # posts = Post.objects.all().order_by('-timestamp')
+    # # create a paginator for posts
+    # paginator = Paginator(posts, 10)
+    # # if page not provided in request, return the latest page
+    # page_number = request.GET.get('page')
+    # page_obj = paginator.get_page(page_number)
+
+    #serialize function returns a dictionary, serialize function is defined in models.py
+    #so post.serialize() returns a dictionary for each post in posts. this becomes a list of dictionaries
+    #then we return to JsonResponse a dictionary with keys id, user, content, timestamp, numlikes
+    #  pointing to a list of dictionaries
+    
+    # first serialised posts returns a list of dictionaries of posts
+    #[{id: xxxx, user:xxxx, timestamp: xxxx, numlikes: xxxx} .... ..... {id: xxxx, user:xxxx, timestamp: xxxx, numlikes: xxxx} {id: xxxx, user:xxxx, timestamp: xxxx, numlikes: xxxx} ]
+    #ser_posts = [post.serialize() for post in page_obj] 
+
     # this current user is the request user
     # get all users that current user is following
     # for each such user, get all posts
@@ -244,22 +261,40 @@ def refresh_following_posts(request):
 
     print(request.user.id)
     print(requestuser)
-    all_following_users = requestuser.following.all()
-    listfollowingpost = []
-    for user in all_following_users:
-        posts = Post.objects.filter(
-            author=user, 
-        )
-        listfollowingpost.extend(posts)
+    all_following_users = requestuser.following.all()  # [user1, user2, user3, ....]
+    if request.method == "GET":
+        posts = Post.objects.filter(author__in=all_following_users).order_by('-timestamp')
+        paginator = Paginator(posts, 10)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        # listfollowingpost = []
+        # # all the posts from user1, user2, user3 ....
+        # for user in all_following_users:
+        #     posts = Post.objects.filter(
+        #         author=user, 
+        #     )
+        #     listfollowingpost.extend(posts)
 
-    ser_posts = [post.serialize() for post in listfollowingpost] 
-    print(ser_posts)
+        # [{author:xxx, content: xxx, timestamp: xxx}]
+        ser_posts = [post.serialize() for post in page_obj] 
+        print(ser_posts)
 
-    #serialize function returns a dictionary, serialize function is defined in models.py
-    #so post.serialize() returns a dictionary for each post in posts. this becomes a list of dictionaries
-    #then we return to JsonResponse a dictionary with key "posts" pointing to a list of dictionaries
-    return JsonResponse({"posts": ser_posts}, status=201)
- 
+        #serialize function returns a dictionary, serialize function is defined in models.py
+        #so post.serialize() returns a dictionary for each post in posts. this becomes a list of dictionaries
+        #then we return to JsonResponse a dictionary with key "posts" pointing to a list of dictionaries
+        # return JsonResponse({"posts": ser_posts}, status=201)
+        context = {
+                "posts": ser_posts,
+                "page_obj": {
+                    "has_previous": page_obj.has_previous(),
+                    "previous_page_number": page_obj.previous_page_number() if page_obj.has_previous()  else page_obj.number,
+                    "number": page_obj.number,
+                    "num_pages": page_obj.paginator.num_pages,
+                    "has_next": page_obj.has_next(),
+                    "next_page_number": page_obj.next_page_number() if page_obj.has_next()  else page_obj.number,
+                }
+            }
+        return JsonResponse(context, status=201)
 
 def update_user_following(request, followed_user):
 
