@@ -104,20 +104,20 @@ function load_post_page(user_id, pagenum) {
     }) 
 
   } else if (user_id === 'following') {
-    load_posts(user_id)
+    load_posts(user_id, pagenum)
     .then(response => {
       // html stuffs
       // set title to Following
 
-      document.querySelector('#all-posts-view').innerHTML =compose_post_table(response["posts"])
+/*       document.querySelector('#all-posts-view').innerHTML =compose_post_table(response["posts"])
 
       document.querySelector(`#edit-textarea-${post_id}`).style.display = 'none';
       document.querySelector('#title-of-page').innerHTML ="Following Posts"
 
       if (document.querySelector('#profile-view') != null) {
         document.querySelector('#profile-view').style.display = 'none';
-      } 
-
+      }  */
+      load_post_page_pagination_element(response, user_id, 'Following Posts', 'False')
 
     }) 
   } else {
