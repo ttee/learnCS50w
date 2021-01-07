@@ -16,6 +16,17 @@ def index(request):
     else:
         return HttpResponseRedirect(reverse("login"))
 
+def following_view(request):
+    if request.user.is_authenticated:
+        posts = []
+        context = {
+            "view_mode": "following",
+            # other useful info for client to know what to do
+        }
+        return render(request, "network/index.html")
+    else:
+        return HttpResponseRedirect(reverse("login"))
+
 def profile(request, user_id):
     if request.user.is_authenticated:
         user = User.objects.get(id = user_id)

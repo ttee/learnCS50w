@@ -64,6 +64,11 @@ function load_post_page_pagination_element(response, user_id, title, display_pro
   document.querySelector('#paged-view').innerHTML = compose_post_pagination(user_id, response['page_obj']);
   document.querySelector('#title-of-page').innerHTML =title;
   document.querySelector('#all-posts-view').style.display = 'block';
+  if (title === 'All Posts') {
+    document.querySelector('#new_post-view').style.display = 'block';
+  } else {
+    document.querySelector('#new_post-view').style.display = 'none';
+  }
   if (display_profile === 'False') {
     document.querySelector('#profile-view').style.display = 'none';
   } else {
@@ -121,15 +126,15 @@ function load_post_page(user_id, pagenum) {
 
     }) 
   } else {
-    load_posts(user_id)
+    load_posts(user_id, pagenum)
     .then(response => {
       // html stuffs
       // set title to Username
       // enable the profile-view
-      document.querySelector('#all-posts-view').innerHTML =compose_post_table(response["posts"])
-      document.querySelector(`#edit-textarea-${post_id}`).style.display = 'none';
-      document.querySelector('#title-of-page').innerHTML =`Profile of ${user_id}`
-      
+      // document.querySelector('#all-posts-view').innerHTML =compose_post_table(response["posts"])
+      // document.querySelector(`#edit-textarea-${post_id}`).style.display = 'none';
+      // document.querySelector('#title-of-page').innerHTML =`Profile of ${user_id}`
+      load_post_page_pagination_element(response, user_id, 'Profile of User', 'True')
       // for (i = 0; i < edit_buttons.length; i ++) {
       //   edit_buttons[i].addEventListener('click', edit_post(post_id));
       // }
@@ -265,7 +270,7 @@ function compose_post_table(posts) {
       <tbody>
       <p>
       ${a[i].id}
-      ${a[i].user}
+      <a href="/${a[i].user}">${a[i].user}</a>
       ${a[i].timestamp}
       <div id="post-content-${post_id}"> ${a[i].content}</div>
       <!--based on the button text, we will toggle between Edit and Save button -->

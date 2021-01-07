@@ -9,7 +9,7 @@
     </h2>
 </div>
 
-<div class = "container">
+<div id="new_post-view" class = "container">
 <form id="new_post">    
     {% csrf_token %}
     <!--margin,outline,border,padding,xxxcontent-->
@@ -21,19 +21,22 @@
 </form>
 </div>
 
+
 <div id="profile-view">
     <p>followers: {{ followers|length }} <br></p>
     <p>following: {{ following|length }} </p>
     {%if user.id != profile_user_id %}
- 
-     {% if user.id in followers %}
-         {% setvar "Unfollow" as action %}
-     {% else %}
-          {% setvar "Follow" as action %}
-     {% endif %}
-         <button type="submit" id ="FollowButton" value={{profile_user_id}}>{{ action }}</button>
-     {% endif %}
+        {% if user.id in followers %}
+            {% setvar "Unfollow" as action %}
+        {% else %}
+            {% setvar "Follow" as action %}
+        {% endif %}
+            <button type="submit" id ="FollowButton" value={{profile_user_id}}>{{ action }}</button>
+    {% else %}
+       <p> condition check failed</p>
+    {% endif %}
  </div>
+
 
 
 
