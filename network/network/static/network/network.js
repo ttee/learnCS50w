@@ -5,9 +5,21 @@ document.addEventListener('DOMContentLoaded', function() {
     //var a = document.getElementById('all_posts'); //or grab it by tagname etc
     //a.href = "somelink url"
     // Use buttons to toggle between views
+
+    //  client //
+    // click on following hyperlink as defined in layout.html //
+    // then go URL.py to look for name of following hyperlink which points to the views.following_view python code //
+    // after views.following.view python code is process in server, a response is returned to client
+    // 
+    // 1) when clicking on index.html hyperlink, it goes to 
     
-    document.querySelector('#following_posts').href = "javascript:load_post_page('following')";
-    document.querySelector('#all_posts').href = "javascript:load_post_page('all')";
+    // get the mode from html code
+  
+    var mode = document.querySelector('#page_mode');
+    load_post_page(mode)
+
+    
+
     //document.querySelector('#new_post').addEventListener('click', () => new_post('request'));
     document.querySelector('#new_post').addEventListener('submit', new_post);
   // in the context of "new_post", javascript eventlistener triggers new_post function when there is a submit click

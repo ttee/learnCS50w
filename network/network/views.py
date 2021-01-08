@@ -18,12 +18,14 @@ def index(request):
 
 def following_view(request):
     if request.user.is_authenticated:
+        # user = User.objects.get(id = request.user)
         posts = []
         context = {
-            "view_mode": "following",
+            "page_mode": "following",
             # other useful info for client to know what to do
+            # server must now give the list of following posts to the client to display
         }
-        return render(request, "network/index.html")
+        return render(request, "network/index.html", context)
     else:
         return HttpResponseRedirect(reverse("login"))
 
