@@ -16,7 +16,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // get the mode from html code
   
     var mode = document.querySelector('#page_mode');
-    load_post_page(mode)
+    console.log(mode.textContent.trim())
+    load_post_page(mode.textContent.trim(), 1)
 
     
 
@@ -28,14 +29,14 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   
   //#FollowButton is the id
-    var currentLocation = window.location;
-    // By default, load the inbox
-    if (currentLocation.pathname === '/') {
-      load_post_page('all');
-    } else {
-      user = currentLocation.pathname.split('/')[1]
-      load_post_page(user);
-    }
+    // var currentLocation = window.location;
+    // // By default, load the inbox
+    // if (currentLocation.pathname === '/') {
+    //   load_post_page('all');
+    // } else {
+    //   user = currentLocation.pathname.split('/')[1]
+    //   load_post_page(user);
+    // }
 
 
   });
@@ -94,6 +95,7 @@ function load_post_page_pagination_element(response, user_id, title, display_pro
 }
   // other than user_id, load_post_page needs a page info to load the correct pagination
 function load_post_page(user_id, pagenum) {
+  console.log(user_id)
   if (user_id === 'all') {
     // api stuffs
     load_posts(user_id, pagenum)

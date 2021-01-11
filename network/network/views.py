@@ -12,7 +12,12 @@ from django.views.decorators.csrf import csrf_exempt
 
 def index(request):
     if request.user.is_authenticated:
-        return render(request, "network/index.html")
+        context = {
+            "page_mode": "all",
+            # other useful info for client to know what to do
+            # server must now give the list of following posts to the client to display
+        }
+        return render(request, "network/index.html", context)
     else:
         return HttpResponseRedirect(reverse("login"))
 
@@ -37,11 +42,15 @@ def profile(request, user_id):
              
         following_list = [x.id  for x in user.following.all()]
         followers_list = [x.id  for x in user.followers.all()]
-
+        num_following_list = len(following_list)
+        num_followers_list = len(followers_list)
 
         context = {
+            "page_mode": profile_username,
             "following": following_list, 
             "followers": followers_list, 
+            "num_following_list": num_following_list,
+            "num_followers_list": num_followers_list,
             "profile_user_id": profile_user_id,
             "profile_username": profile_username,
         }
@@ -349,7 +358,12 @@ def update_user_following(request, followed_user):
     print("Saved B")
     A.save()
     print("Saved A")
-    return JsonResponse({"message": "FollowButton clicked successfully."}, status=201)
+
+    num_following_list = len(A)
+    num_followers_list = len(B)
+
+
+    return JsonResponse({"message": "FollowButton clicked successfully.", "num_following_list":num_following_list,"num_followers_list":num_followers_list }, status=201)
 
 
 def pretty_request(request):
