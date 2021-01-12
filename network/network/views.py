@@ -359,9 +359,9 @@ def update_user_following(request, followed_user):
     A.save()
     print("Saved A")
 
-    num_following_list = len(A)
-    num_followers_list = len(B)
-
+    num_following_list = len(B.following.all())
+    num_followers_list = len(A.following.all())
+    print (num_followers_list, num_following_list)
 
     return JsonResponse({"message": "FollowButton clicked successfully.", "num_following_list":num_following_list,"num_followers_list":num_followers_list }, status=201)
 

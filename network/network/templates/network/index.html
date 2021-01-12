@@ -26,8 +26,11 @@
 
 
 <div id="profile-view">
-    <p>followers: {{ num_followers_list }} <br></p>
-    <p>following: {{ num_following_list }} </p>
+    <div id="follow-stats">
+        <p>followers: {{ num_followers_list }} <br></p>
+        <p>following: {{ num_following_list }} </p>
+    </div>
+
     {%if user.id != profile_user_id %}
         {% if user.id in followers %}
             {% setvar "Unfollow" as action %}

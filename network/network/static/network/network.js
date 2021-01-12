@@ -344,6 +344,8 @@ function follow() {
     // Print result
     if (typeof(result.message) === "string"){
       //load_mailbox('sent');
+      console.log(result.num_following_list, result.num_followers_list);
+      console.log("hello", document.querySelector('#follow-stats'))
       if (this.innerText === 'Unfollow') {
         this.innerText = 'Follow'
       } else {
