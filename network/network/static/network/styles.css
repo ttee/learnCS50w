@@ -151,3 +151,17 @@ border-radius: 0;
     position: relative;
     left: 50px;
 }
+
+.something {
+    padding-top: 50px;
+    padding-right: 30px;
+    padding-bottom: 50px;
+    padding-left: 80px;
+  }
+
+/* .step-links {
+    padding-top: 50px;
+    padding-right: 30px;
+    padding-bottom: 50px;
+    padding-left: 80px;
+  } */

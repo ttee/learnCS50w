@@ -346,6 +346,8 @@ function follow() {
       //load_mailbox('sent');
       console.log(result.num_following_list, result.num_followers_list);
       console.log("hello", document.querySelector('#follow-stats'))
+      document.querySelector(`#following-stats`).textContent = result.num_following_list
+      document.querySelector(`#followers-stats`).textContent = result.num_followers_list
       if (this.innerText === 'Unfollow') {
         this.innerText = 'Follow'
       } else {
@@ -396,7 +398,7 @@ function compose_post_pagination(user_id, page_obj) {
     }
 
     body = `
-              <span class="step-links">
+              <span class="step-links" style="padding-left: 80px;">
                   ${prev}
                   <span class="current">
                       Page ${page_obj.number } of ${page_obj.num_pages}<p><p><p><p>.
