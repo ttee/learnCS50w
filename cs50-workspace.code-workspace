@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "commerce"
+		},
+		{
+			"path": "mail"
+		},
+		{
+			"path": "network"
+		},
+		{
+			"path": "wiki"
+		}
+	],
+	"settings": {}
+}
