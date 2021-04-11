@@ -4,15 +4,19 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path("", views.index, name="index"),
+    path("", views.index, name="index"), # all posts
     path("login", views.login_view, name="login"),
     path("logout", views.logout_view, name="logout"),
     path("register", views.register, name="register"),
-    path("<int:user_id>", views.profile, name="profile"),
-    
+    path("<int:user_id>", views.profile, name="profile"), # user profile
+    path("following", views.following_view, name="following"), # following
 
     # API Routes
     path("posts", views.refresh_post, name="refresh_post"),
+    path("posts/<int:post_id>", views.save_post, name="save_post"),
+
+
+    path("likes", views.like_post, name="like_post"),
     # add route for following posts
     path("posts/following", views.refresh_following_posts, name="refresh_following_posts"),
     path("users/<int:user_id>/posts", views.refresh_user_post, name="refresh_user_post"),

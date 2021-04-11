@@ -38,19 +38,27 @@ class Post(models.Model):
 
 class Like(models.Model):
     createddatetime= models.DateTimeField(auto_now_add=True, blank=True)
-    likegiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name ="likes")
-    likereceiver = models.ForeignKey(Post, on_delete=models.CASCADE, related_name ="likes")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name ="likes")
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name ="likes")
 
 # User table
-# id following followers
+# id following followers   likes
 # 1   2,3,4
-# 2                1
+# 2                1         1,2,3,4,6
 # 3                1
 # 4                1
-# Like table
-# id likegiver
-# 1      2
 
+# Like table
+# id user     post
+# 1      2     1
+# 2      2     2
+# 3      2     3
+# 4      2     4
+# 5      1     5
+# 6      2     5
+# 7      3     5
+
+# get user from Like object where Post = current post
      
 
 # # User table
@@ -60,4 +68,9 @@ class Like(models.Model):
 
 # Post table
 # id  likes
+#  1   1
+#  2   2
+#  3   3
+#  4   4
+#  5   5,6,7
 

@@ -5,9 +5,22 @@ document.addEventListener('DOMContentLoaded', function() {
     //var a = document.getElementById('all_posts'); //or grab it by tagname etc
     //a.href = "somelink url"
     // Use buttons to toggle between views
+
+    //  client //
+    // click on following hyperlink as defined in layout.html //
+    // then go URL.py to look for name of following hyperlink which points to the views.following_view python code //
+    // after views.following.view python code is process in server, a response is returned to client
+    // 
+    // 1) when clicking on index.html hyperlink, it goes to 
     
-    document.querySelector('#following_posts').href = "javascript:load_post_page('following')"
-    document.querySelector('#all_posts').href = "javascript:load_post_page('all')"
+    // get the mode from html code
+  
+    var mode = document.querySelector('#page_mode');
+    console.log(mode.textContent.trim())
+    load_post_page(mode.textContent.trim(), 1)
+
+    
+
     //document.querySelector('#new_post').addEventListener('click', () => new_post('request'));
     document.querySelector('#new_post').addEventListener('submit', new_post);
   // in the context of "new_post", javascript eventlistener triggers new_post function when there is a submit click
@@ -16,14 +29,14 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   
   //#FollowButton is the id
-    var currentLocation = window.location;
-    // By default, load the inbox
-    if (currentLocation.pathname === '/') {
-      load_post_page('all');
-    } else {
-      user = currentLocation.pathname.split('/')[1]
-      load_post_page(user);
-    }
+    // var currentLocation = window.location;
+    // // By default, load the inbox
+    // if (currentLocation.pathname === '/') {
+    //   load_post_page('all');
+    // } else {
+    //   user = currentLocation.pathname.split('/')[1]
+    //   load_post_page(user);
+    // }
 
 
   });
@@ -31,10 +44,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
   function new_post(event) {
     event.preventDefault();
+    csrf_token = document.querySelector("div > input").value
 
+    headers = new Headers({
+      'X-CSRFToken': csrf_token
+    });
     // compose POST request that contains the post content
     fetch('/posts', {
       method: 'POST',
+      headers,
       body: JSON.stringify({
           content: document.querySelector('#compose-body').value, 
       })
@@ -54,59 +72,83 @@ document.addEventListener('DOMContentLoaded', function() {
     );
   }
 
+function load_post_page_pagination_element(response, user_id, title, display_profile) {
+  document.querySelector('#all-posts-view').innerHTML =compose_post_table(response['posts']);
+  document.querySelector('#paged-view').innerHTML = compose_post_pagination(user_id, response['page_obj']);
+  document.querySelector('#title-of-page').innerHTML =title;
+  document.querySelector('#all-posts-view').style.display = 'block';
+  if (title === 'All Posts') {
+    document.querySelector('#new_post-view').style.display = 'block';
+  } else {
+    document.querySelector('#new_post-view').style.display = 'none';
+  }
+  if (display_profile === 'False') {
+    document.querySelector('#profile-view').style.display = 'none';
+  } else {
+    document.querySelector('#profile-view').style.display = 'block';
+  }
+
+
+  // blocks to consider:
+  // - new post
+  // - profile-view (followers/following)
+}
   // other than user_id, load_post_page needs a page info to load the correct pagination
 function load_post_page(user_id, pagenum) {
+  console.log(user_id)
   if (user_id === 'all') {
     // api stuffs
     load_posts(user_id, pagenum)
     .then(response => {
+      load_post_page_pagination_element(response, user_id, 'All Posts', 'False')
       // html stuffs
       // set title to All Posts
       // disable profile-view
-      document.querySelector('#all-posts-view').innerHTML =compose_post_table(response["posts"])
+      // document.querySelector('#all-posts-view').innerHTML =compose_post_table(response["posts"])
 
-      let text_areas = document.querySelectorAll('#edit-textarea');
-      console.log(text_areas)
-      for (i = 0; i < text_areas.length; i ++) {
-         text_areas[i].style.display = 'none';
-       }
-      //document.querySelector('#edit-textarea').style.display = 'none';
-      document.querySelector('#paged-view').innerHTML = compose_post_pagination(user_id, response["page_obj"])
-      document.querySelector('#title-of-page').innerHTML ="All Posts"
+      // // let text_areas = document.querySelectorAll('#edit-textarea');
+      // // console.log(text_areas)
+      // // for (i = 0; i < text_areas.length; i ++) {
+      // //    text_areas[i].style.display = 'none';
+      // //  }
+      // //document.querySelector('#edit-textarea').style.display = 'none';
+      
+      // document.querySelector('#paged-view').innerHTML = compose_post_pagination(user_id, response["page_obj"])
+      // document.querySelector('#title-of-page').innerHTML ="All Posts"
 
-      document.querySelector('#all-posts-view').style.display = 'block';
-      if (document.querySelector('#profile-view') != null) {
-        document.querySelector('#profile-view').style.display = 'none';
-      } 
+      // document.querySelector('#all-posts-view').style.display = 'block';
+      // if (document.querySelector('#profile-view') != null) {
+      //   document.querySelector('#profile-view').style.display = 'none';
+      // } 
     }) 
 
   } else if (user_id === 'following') {
-    load_posts(user_id)
+    load_posts(user_id, pagenum)
     .then(response => {
       // html stuffs
       // set title to Following
-      // diable the profile-view
-      document.querySelector('#all-posts-view').innerHTML =compose_post_table(response["posts"])
-      document.querySelector('#edit-textarea').style.display = 'none';
+
+/*       document.querySelector('#all-posts-view').innerHTML =compose_post_table(response["posts"])
+
+      document.querySelector(`#edit-textarea-${post_id}`).style.display = 'none';
       document.querySelector('#title-of-page').innerHTML ="Following Posts"
 
       if (document.querySelector('#profile-view') != null) {
         document.querySelector('#profile-view').style.display = 'none';
-      } 
-
+      }  */
+      load_post_page_pagination_element(response, user_id, 'Following Posts', 'False')
 
     }) 
   } else {
-    load_posts(user_id)
+    load_posts(user_id, pagenum)
     .then(response => {
       // html stuffs
       // set title to Username
       // enable the profile-view
-      document.querySelector('#all-posts-view').innerHTML =compose_post_table(response["posts"])
-      document.querySelector('#edit-textarea').style.display = 'none';
-      document.querySelector('#title-of-page').innerHTML =`Profile of ${user_id}`
-      let edit_buttons = document.querySelectorAll('edit-button');
-
+      // document.querySelector('#all-posts-view').innerHTML =compose_post_table(response["posts"])
+      // document.querySelector(`#edit-textarea-${post_id}`).style.display = 'none';
+      // document.querySelector('#title-of-page').innerHTML =`Profile of ${user_id}`
+      load_post_page_pagination_element(response, user_id, 'Profile of User', 'True')
       // for (i = 0; i < edit_buttons.length; i ++) {
       //   edit_buttons[i].addEventListener('click', edit_post(post_id));
       // }
@@ -117,7 +159,77 @@ function load_post_page(user_id, pagenum) {
   }
 }
 
+function like_post(post_id) {
+  csrf_token = document.querySelector("div > input").value
+
+  headers = new Headers({
+    'X-CSRFToken': csrf_token
+  });
+  url = `/likes`
+  fetch(url, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({
+      postid: post_id,
+    })
+  })
+  .then (response => response.json())
+  .then (result => {
+    if (typeof(result.message) === "string"){
+      console.log(result.state)
+      console.log(result.numlikes)
+      if (result.state == 'like') {
+        document.querySelector(`#like-button-${post_id}`).style.display = 'none';
+        document.querySelector(`#unlike-button-${post_id}`).style.display = 'block';
+        document.querySelector(`#numlikes-${post_id}`).textContent = result.numlikes;
+      } else {
+        document.querySelector(`#unlike-button-${post_id}`).style.display = 'none';
+        document.querySelector(`#like-button-${post_id}`).style.display = 'block';
+        document.querySelector(`#numlikes-${post_id}`).textContent = result.numlikes;
+
+      }
+    }
+  })
+}
+
+function save_post(post_id) {
+  csrf_token = document.querySelector("div > input").value
+
+  headers = new Headers({
+    'X-CSRFToken': csrf_token
+  });
+
+  // define a url for api call
+  // TODO: include csrf token
+  url = `/posts/${post_id}`
+  fetch(url, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({
+         //TODO:  get the latest context
+        content: document.querySelector(`#compose-body-${post_id}`).value, 
+    })
+  })
+    // views.py being called by url
+  .then (response => response.json())
+    // fetch url and process the response which has been assigned to result
+  .then (result => {
+    if (typeof(result.message) === "string"){
+      // take what has been saved in the server and display on the post message
+      document.querySelector(`#post-content-${post_id}`).textContent = result.saved_post
+      document.querySelector(`#save-button-${post_id}`).style.display = 'none';
+      document.querySelector(`#edit-button-${post_id}`).style.display = 'block';
+      document.querySelector(`#post-content-${post_id}`).style.display = 'block';
+      document.querySelector(`#edit-textarea-${post_id}`).style.display = 'none';
+    }
+  }
+  );
+  
+}
+
+
 function edit_post(post_id) {
+  
   console.log("Edit clicked") 
   // edit button:
   //      once clicked:
@@ -126,16 +238,21 @@ function edit_post(post_id) {
  //replace the post with innerhtml for textarea
  //select a component in this HTML page to modify using javascript
   
-  document.querySelector('#edit-textarea').style.display = 'block';
+  document.querySelector(`#edit-textarea-${post_id}`).style.display = 'block';
   console.log(post_id)
   document.querySelector(`#post-content-${post_id}`).style.display = 'none';
+  document.querySelector(`#save-button-${post_id}`).style.display = 'block';
+  document.querySelector(`#edit-button-${post_id}`).style.display = 'none';
 }
  
 function compose_post_table(posts) {
+  //has access to ser_posts
+  //       ser_posts[i]['liked'] = has_been_liked_by_request_user
+  console.log("this is from server:", posts)
   body = []
-
+  currentUser = document.querySelector(`#profile`).href.split('/')[3]
   //for (i = results.posts.length -1;i > -1;  i--){
-
+ 
   a = posts
   // for each post
   // we have a div for each post
@@ -146,20 +263,38 @@ function compose_post_table(posts) {
   //             - copy the post content to the text editting area
   for (let i in a) {
       post_id = a[i].id
+      displayParam = 'block'
+      if (currentUser != a[i].user){
+        displayParam = 'none';
+      }
+      if (a[i].liked_by_request_user){
+        LikeParam = 'none';
+        UnlikeParam = 'block';
+      } else {
+        LikeParam = 'block'
+        UnlikeParam = 'none';
+      }
+
+      // if (currentUser != a[i].user){
+      //   displayParam = 'none';
+      // }
       body.push(`
       <div class=mystyle>
       <table class="table table-hover mails">
       <tbody>
       <p>
       ${a[i].id}
-      ${a[i].user}
+      <a href="/${a[i].user}">${a[i].user}</a>
       ${a[i].timestamp}
       <div id="post-content-${post_id}"> ${a[i].content}</div>
       <!--based on the button text, we will toggle between Edit and Save button -->
 
-      <button class="edit-button" onclick="edit_post('${post_id}')">Edit</button>
-      <div id="edit-textarea"><textarea class="form-control" id="compose-body" placeholder="Body">${a[i].content}</textarea> </div>
-      ${a[i].numlikes}
+      <button id="like-button-${post_id}" style="display:${LikeParam};" onclick="like_post('${post_id}')">Like</button>
+      <button id="unlike-button-${post_id}" style="display:${UnlikeParam};" onclick="like_post('${post_id}')">UnLike</button>
+      <button id="save-button-${post_id}" style="display:none;" onclick="save_post('${post_id}')">Save</button>
+      <button id="edit-button-${post_id}" style="display:${displayParam};" onclick="edit_post('${post_id}')">Edit</button>
+      <div id="edit-textarea-${post_id}" style="display:none;"><textarea class="form-control" id="compose-body-${post_id}" placeholder="Body">${a[i].content}</textarea> </div>
+      <label id="numlikes-${post_id}">${a[i].numlikes}</label></b>
       </tbody>
       </table>
       </div>
@@ -170,17 +305,19 @@ function compose_post_table(posts) {
   return  `${body.join('\n')}`
 }
 
+// reason for asynchronous function is because we are using await to wait
+// for the response from the server : fetch(url) command
 async function load_posts(user_id, pagenum) {
   if (pagenum == null) {
     pagenum = 1
   }
-  console.log(pagenum)
+
  if (user_id === 'all') {
     url = `/posts?page=${pagenum}`
   } else if (user_id === 'following') {
-    url = `/posts/following`
+    url = `/posts/following?page=${pagenum}`
   } else {
-    url = `/users/${user_id}/posts`
+    url = `/users/${user_id}/posts?page=${pagenum}`
   }
   
   response = await fetch(url)
@@ -207,6 +344,10 @@ function follow() {
     // Print result
     if (typeof(result.message) === "string"){
       //load_mailbox('sent');
+      console.log(result.num_following_list, result.num_followers_list);
+      console.log("hello", document.querySelector('#follow-stats'))
+      document.querySelector(`#following-stats`).textContent = result.num_following_list
+      document.querySelector(`#followers-stats`).textContent = result.num_followers_list
       if (this.innerText === 'Unfollow') {
         this.innerText = 'Follow'
       } else {
@@ -215,6 +356,7 @@ function follow() {
     }
   }
   );
+  // other function
 }
 
 function compose_post_pagination(user_id, page_obj) {
@@ -235,39 +377,35 @@ function compose_post_pagination(user_id, page_obj) {
     //   prev = `<a href="javascript:load_post_page('${user_id}', 1)">&laquo; First</a>
     //   <a href="javascript:load_post_page('${user_id}','${page_obj.previous_page_number }')">previous</a><p><p><p><p>`
     // }
-    if (page_obj.has_next) {
+    if (page_obj.has_previous) {
       // load_post_page(user_id, 1);
       // load_post_page('all', 1);
       //first page href declaration
       //<<next last>>
-      prev = `<a href="javascript:load_post_page('${user_id}','${page_obj.num_pages }')">&laquo; First</a>
-      <a href="javascript:load_post_page('${user_id}', ${page_obj.next_page_number})">previous</a><p><p><p><p>`
+      prev = `<a href="javascript:load_post_page('${user_id}', 1)">First &laquo;</a>
+      <a href="javascript:load_post_page('${user_id}', ${page_obj.previous_page_number})">previous</a><p><p><p><p>`
     }
     else {
       prev = ''
     }
 
-    if (page_obj.has_previous) {
-      next = `<a href="javascript:load_post_page('${user_id}', ${page_obj.previous_page_number})">next</a>
-      <a href="javascript:load_post_page('${user_id}', 1)">last &raquo;</a><p><p><p><p>`  }
+    if (page_obj.has_next) {
+      next = `<a href="javascript:load_post_page('${user_id}', ${page_obj.next_page_number})">next</a>
+      <a href="javascript:load_post_page('${user_id}','${page_obj.num_pages }')">&raquo; Last</a>
+      <p><p><p><p>`  }
     else {
       next = ''
     }
-    // if (page_obj.has_next) {
-    //   next = `<a href="javascript:load_post_page('${user_id}', ${page_obj.next_page_number})">next</a>
-    //   <a href="javascript:load_post_page('${user_id}','${page_obj.num_pages }')">last &raquo;</a><p><p><p><p>`  }
-    // else {
-    //   next = ''
-    // }
 
     body = `
-              <span class="step-links">
+              <span class="step-links" style="padding-left: 80px;">
                   ${prev}
                   <span class="current">
-                      Page ${page_obj.num_pages + 1 - page_obj.number } of ${page_obj.num_pages}<p><p><p><p>.
+                      Page ${page_obj.number } of ${page_obj.num_pages}<p><p><p><p>.
                   </span>
                   ${next}
               </span>
             `
 return body
 }
+

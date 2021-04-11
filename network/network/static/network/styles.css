@@ -125,6 +125,18 @@ border-radius: 0;
 .edit-button {
     
 }
+
+.edit-textarea {
+    
+}
+
+.unlike-button {
+    
+}
+
+.like-button {
+    
+}
 .table tr.active td {
     background-color:#4d4f50;
     color: white;
@@ -139,3 +151,17 @@ border-radius: 0;
     position: relative;
     left: 50px;
 }
+
+.something {
+    padding-top: 50px;
+    padding-right: 30px;
+    padding-bottom: 50px;
+    padding-left: 80px;
+  }
+
+/* .step-links {
+    padding-top: 50px;
+    padding-right: 30px;
+    padding-bottom: 50px;
+    padding-left: 80px;
+  } */
